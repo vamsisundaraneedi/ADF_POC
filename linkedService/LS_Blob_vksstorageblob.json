@@ -1,0 +1,17 @@
+{
+	"name": "LS_Blob_vksstorageblob",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobStorage",
+		"typeProperties": {
+			"connectionString": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "LS_KVA_ADF_KV_VKS",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "Secret-for-blob"
+			}
+		}
+	}
+}

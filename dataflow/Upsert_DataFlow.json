@@ -1,0 +1,59 @@
+{
+	"name": "Upsert_DataFlow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_excel_input",
+						"type": "DatasetReference"
+					},
+					"name": "SalesDataExcelInput"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_output",
+						"type": "DatasetReference"
+					},
+					"name": "WriteToOnPremSQLServer"
+				}
+			],
+			"transformations": [
+				{
+					"name": "FilterNULLValues"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Sno as short,",
+				"          Region as string,",
+				"          Country as string,",
+				"          {Item Type} as string,",
+				"          {Sales Channel} as string,",
+				"          {Order Priority} as string,",
+				"          {Order Date} as date,",
+				"          {Order ID} as integer,",
+				"          {Ship Date} as date,",
+				"          {Units Sold} as short,",
+				"          {Unit Price} as double,",
+				"          {Unit Cost} as double,",
+				"          {Total Revenue} as double,",
+				"          {Total Cost} as double,",
+				"          {Total Profit} as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> SalesDataExcelInput",
+				"SalesDataExcelInput alterRow(deleteIf(isNull({Unit Price})),",
+				"     upsertIf(true())) ~> FilterNULLValues",
+				"FilterNULLValues sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> WriteToOnPremSQLServer"
+			]
+		}
+	}
+}

@@ -1,0 +1,58 @@
+{
+	"name": "JSON",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_input_json",
+						"type": "DatasetReference"
+					},
+					"name": "JSONInput"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_output",
+						"type": "DatasetReference"
+					},
+					"name": "JSONOutput"
+				}
+			],
+			"transformations": [
+				{
+					"name": "FlattenJSON"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          goods as (customers as string[], orders as (orderId as short, orderTotal as double, shipped as (orderItems as (itemName as string, itemQty as short)[]))[], trade as boolean),",
+				"          location as string,",
+				"          name as string,",
+				"          satellites as string[]",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'arrayOfDocuments') ~> JSONInput",
+				"JSONInput foldDown(unroll(goods.orders.shipped.orderItems, goods.orders),",
+				"     mapColumn(",
+				"          orderId = goods.orders.orderId,",
+				"          orderTotal = goods.orders.orderTotal,",
+				"          itemName = goods.orders.shipped.orderItems.itemName,",
+				"          itemQty = goods.orders.shipped.orderItems.itemQty",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> FlattenJSON",
+				"FlattenJSON sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['JSON_Flatten.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> JSONOutput"
+			]
+		}
+	}
+}

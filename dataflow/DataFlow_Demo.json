@@ -1,0 +1,58 @@
+{
+	"name": "DataFlow_Demo",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "ds_excel_input",
+						"type": "DatasetReference"
+					},
+					"name": "ADWExcelInput"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_output",
+						"type": "DatasetReference"
+					},
+					"name": "OutputBlobStorage"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Pivot1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          ProductKey as string,",
+				"          SKU as string,",
+				"          Product as string,",
+				"          {Standard Cost} as string,",
+				"          Color as string,",
+				"          {List Price} as string,",
+				"          Model as string,",
+				"          Subcategory as string,",
+				"          Category as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> ADWExcelInput",
+				"ADWExcelInput pivot(groupBy(Subcategory),",
+				"     pivotBy(Product),",
+				"     Pivoted_Standard_Cost = sum(toInteger({Standard Cost})),",
+				"     columnNaming: '$N$V',",
+				"     lateral: true) ~> Pivot1",
+				"Pivot1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     partitionFileNames:['DF_Output.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> OutputBlobStorage"
+			]
+		}
+	}
+}

@@ -1,0 +1,81 @@
+{
+	"name": "ds_onprem",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LocalHost",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [
+			{
+				"name": "EntityKey",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "EntityLabel",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ParentEntityKey",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ParentEntityLabel",
+				"type": "nvarchar"
+			},
+			{
+				"name": "EntityName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "EntityDescription",
+				"type": "nvarchar"
+			},
+			{
+				"name": "EntityType",
+				"type": "nvarchar"
+			},
+			{
+				"name": "StartDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "EndDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "Status",
+				"type": "nvarchar"
+			},
+			{
+				"name": "ETLLoadID",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "LoadDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "UpdateDate",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "DimTest"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,9 @@
+{
+	"name": "Vamsi-Sundaraneedi-ADF",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "96241226-0aa1-4543-84d5-388b82bf718b",
+		"tenantId": "3757135c-8431-458f-af18-089a87f7014e"
+	}
+}
